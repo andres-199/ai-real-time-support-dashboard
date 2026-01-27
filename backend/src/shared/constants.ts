@@ -7,6 +7,14 @@ export const APP_CONSTANTS = {
     HEALTH: '/health',
     MESSAGES: '/messages',
   },
+  WEBSOCKET: {
+    MESSAGES: {
+      NEW_CLIENT_CONNECTED: "🔌 New client connected:",
+      CLIENT_DISCONNECTED: "🔌 Client disconnected:",
+      SOCKET_IO_INITIALIZED: "✅ Socket.IO server initialized",
+      SOCKET_IO_NOT_INITIALIZED: "❌ Socket.IO not initialized",
+    },
+  },
   LOG_MESSAGES: {
     DB_CONNECTED: '✅ Connected to MongoDB:',
     DB_DISCONNECTED: '✅ Disconnected from MongoDB',

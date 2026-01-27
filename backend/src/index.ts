@@ -1,10 +1,13 @@
 import express, { Application } from 'express';
+import { createServer } from 'http';
 import { connectToDatabase, disconnectFromDatabase, getDatabase } from './infrastructure/database/MongoDBConnection';
+import { initializeSocketIO } from './infrastructure/websocket/SocketServer';
 import { config } from './infrastructure/config/config';
 import { APP_CONSTANTS } from './shared/constants';
 import { corsMiddleware } from './infrastructure/api/middleware/corsMiddleware';
 
 const app: Application = express();
+const httpServer = createServer(app);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,9 +25,8 @@ async function startServer() {
   try {
     await connectToDatabase();
     const db = getDatabase();
-
-
-    app.listen(config.server.port, () => {
+    initializeSocketIO(httpServer);
+    httpServer.listen(config.server.port, () => {
       console.log(`${APP_CONSTANTS.LOG_MESSAGES.SERVER_RUNNING} ${config.server.port}`);
       console.log(`${APP_CONSTANTS.LOG_MESSAGES.ENV_INFO} ${config.server.env}`);
       console.log(`${APP_CONSTANTS.LOG_MESSAGES.HEALTH_CHECK_INFO} http://localhost:${config.server.port}${APP_CONSTANTS.ROUTES.HEALTH}`);
