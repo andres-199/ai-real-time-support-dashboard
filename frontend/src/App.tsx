@@ -2,9 +2,11 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { useSocket } from './presentation/hooks/useSocket'
 
 function App() {
   const [count, setCount] = useState(0)
+  const { isConnected } = useSocket();
 
   return (
     <>
@@ -17,7 +19,20 @@ function App() {
         </a>
       </div>
       <h1>Vite + React</h1>
+
       <div className="card">
+         <div style={{
+            padding: '10px',
+            marginBottom: '20px',
+            borderRadius: '8px',
+            backgroundColor: isConnected ? '#e6fffa' : '#fff5f5',
+            color: isConnected ? '#2c7a7b' : '#c53030',
+            border: `1px solid ${isConnected ? '#38b2ac' : '#fc8181'}`
+          }}>
+            <strong>Socket Status: </strong>
+            {isConnected ? 'Connected 🟢' : 'Disconnected 🔴'}
+        </div>
+
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
