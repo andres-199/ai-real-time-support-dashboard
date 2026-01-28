@@ -36,6 +36,7 @@ export const APP_CONSTANTS = {
     INTERNAL_SERVER_ERROR: 'Internal server error',
     MISSING_FIELDS_CREATE_MESSAGE: 'Missing required fields: conversationId, senderType, content',
     WS_PROCESSING_FAILED: 'Failed to process message',
+    CONVERSATION_ID_REQUIRED: 'conversationId is required',
   },
   HTTP: {
     HEADERS: {
@@ -60,4 +61,4 @@ export const APP_CONSTANTS = {
     PORT: '3000',
     ENV: 'development',
   }
-};
+}

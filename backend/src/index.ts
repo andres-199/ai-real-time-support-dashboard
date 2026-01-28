@@ -6,6 +6,8 @@ import { createMessageUseCase } from './application/use-cases/CreateMessageUseCa
 import { initializeSocketIO } from './infrastructure/websocket/SocketServer'
 import { createMessageHandler } from './infrastructure/websocket/handlers/messageHandler'
 import { config } from './infrastructure/config/config'
+import { listMessagesUseCase } from './application/use-cases/ListMessagesUseCase'
+import { createMessageRouter } from './infrastructure/api/routes/MessageRoutes'
 import { APP_CONSTANTS } from './shared/constants'
 import { corsMiddleware } from './infrastructure/api/middleware/corsMiddleware'
 
@@ -29,7 +31,11 @@ async function startServer() {
     await connectToDatabase()
     const db = getDatabase()
     const messageCollection = db.collection<MessageDocument>(APP_CONSTANTS.COLLECTION.MESSAGES)
-    const messageHandler = createMessageHandler(createMessageUseCase(messageRepository(messageCollection)))
+    const _messageRepository = messageRepository(messageCollection)
+    const _listMessagesUseCase = listMessagesUseCase(_messageRepository)
+    const messageRouter = createMessageRouter(_listMessagesUseCase)
+    app.use(APP_CONSTANTS.ROUTES.API_PREFIX, messageRouter)
+    const messageHandler = createMessageHandler(createMessageUseCase(_messageRepository))
     const wsHandlers = [messageHandler]
     initializeSocketIO(httpServer, wsHandlers)
     httpServer.listen(config.server.port, () => {
