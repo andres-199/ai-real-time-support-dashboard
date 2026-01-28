@@ -2,7 +2,7 @@ import { ObjectId, Collection } from 'mongodb';
 import { Message } from '../../domain/entities/Message';
 import { MessageRepository } from '../../domain/repositories/MessageRepository';
 
-interface MessageDocument {
+export interface MessageDocument {
   _id?: ObjectId;
   conversationId: string;
   senderType: string;

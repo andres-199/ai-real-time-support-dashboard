@@ -20,6 +20,8 @@ export const APP_CONSTANTS = {
     DB_DISCONNECTED: '✅ Disconnected from MongoDB',
     DB_CONNECTION_ERROR: '❌ MongoDB connection error:',
     DB_DISCONNECTION_ERROR: '❌ MongoDB disconnection error:',
+    WS_MESSAGE_RECEIVED: '📩 Message received from user:',
+    WS_PROCESSING_ERROR: 'Error processing WebSocket message:',
     SERVER_RUNNING: '🚀 Server running on port',
     ENV_INFO: '📝 Environment:',
     HEALTH_CHECK_INFO: '🔗 Health check:',
@@ -33,6 +35,7 @@ export const APP_CONSTANTS = {
     DB_NOT_INITIALIZED: 'Database not initialized. Call connect() first.',
     INTERNAL_SERVER_ERROR: 'Internal server error',
     MISSING_FIELDS_CREATE_MESSAGE: 'Missing required fields: conversationId, senderType, content',
+    WS_PROCESSING_FAILED: 'Failed to process message',
   },
   HTTP: {
     HEADERS: {
