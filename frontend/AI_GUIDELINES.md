@@ -5,6 +5,8 @@
 - **SOLID**: strict adherence to SOLID principles.
 - **Clean Architecture**: Separation of concerns. UI components should not contain business logic. hexagonal architecture.
 - **Functional Programming**: Prefer functional components and hooks.
+- **No Direct HTML**: strictly prohibit the use of raw HTML tags (`div`, `span`, `button`, etc.) in presentation or business components. Use **Material UI (MUI)** components instead to maintain consistency and allow global adjustments.
+- **Component Consistency**: All UI elements must come from Material UI to maintain a consistent Look & Feel.
 
 ## Coding Standards
 

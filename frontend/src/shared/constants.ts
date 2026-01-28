@@ -9,3 +9,18 @@ export const WS_EVENTS = {
   AI_SUGGESTION_READY: 'ai_suggestion_ready',
   ERROR: 'error',
 }
+
+export const CHAT_LABELS = {
+  INPUT_PLACEHOLDER: 'Escribe un mensaje...',
+  SEND_BUTTON: 'Enviar',
+  USER_SENDER: 'Tú',
+  OPERATOR_SENDER: 'Soporte',
+  SYSTEM_SENDER: 'Sistema',
+  TIMESTAMP_FORMAT: 'HH:mm',
+}
+
+export const UI_CONSTANTS = {
+  CHAT_CONTAINER_ID: 'chat-container',
+  MESSAGE_LIST_ID: 'message-list',
+  INPUT_ID: 'chat-input',
+}
