@@ -1,13 +1,9 @@
 import express, { Application } from 'express'
 import { createServer } from 'http'
-import { connectToDatabase, disconnectFromDatabase, getDatabase } from './infrastructure/database/MongoDBConnection'
-import { MessageDocument, messageRepository } from './infrastructure/repositories/MessageRepository'
-import { createMessageUseCase } from './application/use-cases/CreateMessageUseCase'
+import { disconnectFromDatabase } from './infrastructure/database/MongoDBConnection'
 import { initializeSocketIO } from './infrastructure/websocket/SocketServer'
-import { createMessageHandler } from './infrastructure/websocket/handlers/messageHandler'
 import { config } from './infrastructure/config/config'
-import { listMessagesUseCase } from './application/use-cases/ListMessagesUseCase'
-import { createMessageRouter } from './infrastructure/api/routes/MessageRoutes'
+import { setupDependencies } from './infrastructure/config/dependencies'
 import { APP_CONSTANTS } from './shared/constants'
 import { corsMiddleware } from './infrastructure/api/middleware/corsMiddleware'
 
@@ -28,15 +24,12 @@ app.use((err: Error, _: express.Request, res: express.Response, __: express.Next
 
 async function startServer() {
   try {
-    await connectToDatabase()
-    const db = getDatabase()
-    const messageCollection = db.collection<MessageDocument>(APP_CONSTANTS.COLLECTION.MESSAGES)
-    const _messageRepository = messageRepository(messageCollection)
-    const _listMessagesUseCase = listMessagesUseCase(_messageRepository)
-    const messageRouter = createMessageRouter(_listMessagesUseCase)
-    app.use(APP_CONSTANTS.ROUTES.API_PREFIX, messageRouter)
-    const messageHandler = createMessageHandler(createMessageUseCase(_messageRepository))
-    const wsHandlers = [messageHandler]
+    const { routers, wsHandlers } = await setupDependencies()
+
+    routers.forEach(({ path, router }) => {
+      app.use(path, router)
+    })
+
     initializeSocketIO(httpServer, wsHandlers)
     httpServer.listen(config.server.port, () => {
       console.log(`${APP_CONSTANTS.LOG_MESSAGES.SERVER_RUNNING} ${config.server.port}`)
