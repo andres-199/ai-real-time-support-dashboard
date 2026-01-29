@@ -1,25 +1,30 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect, useCallback } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { socketAdapter } from '../../infrastructure/adapters/socket.adapter'
 import { SenderType } from '../../domain/models/message.model'
 import type { Message } from '../../domain/models/message.model'
 import { WS_EVENTS } from '../../shared/constants'
+import { useGetMessagesQuery } from '../../infrastructure/api/chat.api'
+import { setMessages, addMessage } from '../../application/store/slices/chat.slice'
+import type { RootState } from '../../application/store/store'
+import { messageAdapter } from '../../infrastructure/adapters/message.adapter'
 
 export const useChat = (conversationId: string) => {
-	const [messages, setMessages] = useState<Message[]>([])
+	const dispatch = useDispatch()
+	const messages = useSelector((state: RootState) => state.chat.messages)
+
+	const { data: historicalMessages, isLoading, error } = useGetMessagesQuery(conversationId)
+
+	useEffect(() => {
+		if (historicalMessages) {
+			dispatch(setMessages(historicalMessages))
+		}
+	}, [historicalMessages, dispatch])
 
 	const handleMessageReceived = useCallback((payload: any) => {
-		const newMessage: Message = {
-			id: payload.id,
-			conversationId: payload.conversationId,
-			senderType: payload.senderType,
-			content: payload.content,
-			createdAt: new Date(payload.createdAt),
-			updatedAt: new Date(payload.updatedAt),
-			deletedAt: payload.deletedAt ? new Date(payload.deletedAt) : null,
-		}
-
-		setMessages((prev) => [...prev, newMessage])
-	}, [conversationId])
+		const newMessage = messageAdapter.toDomain(payload)
+		dispatch(addMessage(newMessage))
+	}, [dispatch])
 
 	useEffect(() => {
 		socketAdapter.on(WS_EVENTS.MESSAGE_RECEIVED, handleMessageReceived)
@@ -47,11 +52,14 @@ export const useChat = (conversationId: string) => {
 			id: crypto.randomUUID(),
 			...messagePayload,
 		}
-		setMessages((prev) => [...prev, optimisticMessage])
-	}, [conversationId])
+
+		dispatch(addMessage(optimisticMessage))
+	}, [conversationId, dispatch])
 
 	return {
 		messages,
 		sendMessage,
+		isLoading,
+		error
 	}
 }

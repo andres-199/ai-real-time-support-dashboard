@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Paper, Typography, Divider } from '@mui/material'
+import { Box, Paper, Typography, Divider, CircularProgress } from '@mui/material'
 import { useChat } from '../../hooks/useChat'
 import { MessageList } from './MessageList'
 import { MessageInput } from './MessageInput'
@@ -9,7 +9,7 @@ interface ChatContainerProps {
 }
 
 export const ChatContainer: React.FC<ChatContainerProps> = ({ conversationId }) => {
-	const { messages, sendMessage } = useChat(conversationId)
+	const { messages, sendMessage, isLoading, error } = useChat(conversationId)
 
 	return (
 		<Paper
@@ -31,7 +31,23 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ conversationId }) 
 				</Typography>
 			</Box>
 			<Divider />
-			<MessageList messages={messages} />
+
+			<Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative' }}>
+				{isLoading && (
+					<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+						<CircularProgress />
+					</Box>
+				)}
+
+				{error && (
+					<Box sx={{ p: 4, textAlign: 'center' }}>
+						<Typography color="error">Error al cargar los mensajes</Typography>
+					</Box>
+				)}
+
+				{!isLoading && !error && <MessageList messages={messages} />}
+			</Box>
+
 			<MessageInput onSendMessage={sendMessage} />
 		</Paper>
 	)

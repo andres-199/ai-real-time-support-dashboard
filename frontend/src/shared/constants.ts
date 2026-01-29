@@ -1,3 +1,9 @@
+export const API_BASE_URL = 'http://localhost:3000/api'
+
+export const API_ROUTES = {
+  MESSAGES: '/messages',
+}
+
 export const SOCKET_URL = 'http://localhost:3000'
 
 export const WS_EVENTS = {
